@@ -1,5 +1,6 @@
 import numpy as np
 from tabulate import tabulate
+from utils import *
 
 
 # Algunas utilidades básicas
@@ -10,7 +11,7 @@ def norm_esp(vec):
 
 # Función para leer una toleracia valida
 def leer_tolerancia():
-    tol = float(input("\u27A5 Ingrese la toleracion: "))
+    tol = float(input("\u27A5 Ingrese la tolerancia: "))
 
     while tol <= 0:
         print("La tolerancia debe ser mayor que cero.")
@@ -176,7 +177,7 @@ def metodo_broyden(sistema, x0, tol, max_iter):
         print(f"\u27A4 La solución encontrada con un error de {error} es: X^T = ", xk.T)
     else:
         print("\u27A4 La solución no converge, el número máximo de iteraciones fue alcanzado pero NO la tolerancia.")
-        print("\u27A4 La mejor aproximación encontrada es: X^T = ", xk.T)
+        print(f"\u27A4 La mejor aproximación encontrada con un error de {error} es: X^T = ", xk.T)
 
 
 def menu_otro_calculo():
@@ -195,7 +196,9 @@ def menu_otro_calculo():
 def menu_programa1():
     opcion_otro_calculo = 0
     while True:
-        print("\nSISTEMAS DE ECUACIONES NO LINEALES\n")
+        limpiar_pantalla()
+        caja_titulo_2("SISTEMAS DE ECUACIONES NO LINEALES")
+        print()
         i = 1
         for sistema in sistemas:
             print(f"{i}. " + "\n   ".join(sistema["ecuaciones_texto"]))
@@ -225,7 +228,7 @@ def menu_programa1():
             metodo_broyden(sistema, x0, tol, max_iter)
             
             # Opciones adicionales para el usuario
-            print()
+            input("\nPresione Enter para continuar...\n")
             opcion_otro_calculo = menu_otro_calculo()
             if opcion_otro_calculo > 1:
                 break

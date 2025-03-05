@@ -1,51 +1,25 @@
 from programa1 import menu_programa1
-import time
-import sys
-
-def portada():
-    
-    print("MÉTODOS NUMÉRICOS II")
-    print("°*°*°PROGRAMA 1 (Metodo de Broyden)°*°*°")
-    print("Profesora: Teresa Carrillo Ramirez")
-    print("Integrantes: ")
-    print("- Moctezuma Isidro Michelle")
-    print("- Villeda Lopez Saul")
-    input("Presione Enter para ver el menu principal...\n")
-
-import time
-import sys
+from utils import *
 import textwrap
 
-def imprimir_lento(texto, velocidad=0.03):
-    """Imprime texto letra por letra para efecto dramático."""
-    for letra in texto:
-        sys.stdout.write(letra)
-        sys.stdout.flush()
-        time.sleep(velocidad)
-    print()
 
-def crear_pantalla_bienvenida(titulo, mensaje_multilinea, iconos=None):
+def crear_pantalla_bienvenida(titulo, mensaje_multilinea):
     """
     Crea una pantalla de bienvenida personalizable con múltiples líneas.
 
     :param titulo: Título principal de la pantalla
     :param mensaje_multilinea: Lista de líneas de mensaje
-    :param iconos: Diccionario de iconos personalizados (opcional)
     """
     # Iconos por defecto si no se proporcionan
-    if iconos is None:
-        iconos = {
-            "cohete": "🚀",
-            "estrella": "✨", 
-            "rayo": "⚡", 
-            "fuego": "🔥"
-        }
+    iconos = {
+        "cohete": "🚀",
+        "estrella": "✨", 
+        "rayo": "⚡", 
+        "fuego": "🔥"
+    }
 
     # Ancho de la pantalla
     ancho = 70
-
-    # Limpiar pantalla
-    print("\033[H\033[J", end="")
 
     # Líneas de decoración
     linea_superior = "╔" + "═" * ancho + "╗"
@@ -92,25 +66,16 @@ if __name__ == "__main__":
         "\u29BF Villeda Lopez Saul"
     ]
 
-    # Personalizar iconos (opcional)
-    iconos_personalizados = {
-        "cohete": "🌟",
-        "estrella": "💡", 
-        "rayo": "🔧", 
-        "fuego": "📊"
-    }
-
     # Crear pantalla de bienvenida
     crear_pantalla_bienvenida(
         "PAQUETE DE PROGRAMAS (PARTE 1)", 
-        mensaje_bienvenida,
-        iconos_personalizados
+        mensaje_bienvenida
     )
 
-    
     # Ejecutar el menú principal
     while(True):
-        print("MENU PRINCIPAL")
+        limpiar_pantalla()
+        caja_titulo_1("MENU PRINCIPAL")
         print("1. Solucion de sistemas de ecuaciones no lineales (Broyden)")
         print("2. Salir")
         opcion = int(input("Seleccione una opcion: "))
