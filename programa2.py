@@ -1,115 +1,195 @@
-#Programa 2
-
-#Imprimir tabla
-def imprime_tabla(tabla):
-  print("| Ren |     x      |     y      |")
-  print("|-----|------------|------------|")
-  for i in range(len(tabla)):
-    print(f"|  {i+1}  |  {tabla[i][0]:.6f}  |  {tabla[i][1]:.6f}  |")
-  return
+from tabulate import tabulate
+from utils import *
+import numpy as np
+from rich import print
+import copy
 
 # Función para obtener los datos de la tabla y verificar si
 def obtener_datos(registros):
   datos = []
-  aux = 0
 
-  # Se leen los datos y se agregan a la "tabla"
+  while True:
+    x0 = float(input("⮞ Ingrese el valor de x_0: "))
+    xn = float(input("⮞ Ingrese el valor de x_n: "))
+    if xn <= x0:
+      print("Error. El valor de x_n debe ser mayor que x_0.\n")
+    else:
+      break
+
+  h = (xn - x0) / (registros - 1)
+
+  # Se llenan los datos de la tabla
+  xi = x0
+  print("⮞ Ingrese los valores de f(x_i) para cada x_i")
   for i in range(registros):
-    print("Ingrese datos del registro", i + 1)
-    # Llenar registro
-    x = float(input("x = "))
-    f_x = float(input("f(x) = "))
-    datos.append([x, f_x])
+    f_xi = float(input(f"  👉 x_{i} = {xi}, f(x_{i}) = "))
+    datos.append([i, xi, f_xi])
+    # Si la siguiente iteración es la última toma el valor de x_n para evitar error de redondeo
+    if i == registros - 2:
+      xi = xn
+    else:
+      xi += h
 
-  # Ordena datos
-  ordena = sorted(datos, key=lambda elemento: elemento[0])
-  return ordena
-
-#Funcion del método de diferencias divididas
-def metodo_diferencias(a,punto,grado_pol):
-  n=len(a)-1
-  Fx = [[0] * (n+2) for _ in range(n+1)] #Se asigna la dimensión de la matriz Fx=Fij además almacenara los resultados de la interpolacion
-  for i in range(n+1): # Las primeras dos columnas se llenan con los valores de x e f(x)=y
-    Fx[i][0]= a[i][0] #Valores de x
-    Fx[i][1]= a[i][1] #Valores de y=f(x)
-  #Comienza el método de diferencias divididas
-  for j in range(1, n + 1):
-    for i in range(n - j + 1):
-        Fx[i][j + 1] = ( Fx[i][j]- Fx[i + 1][j]) / (Fx[i][0] - Fx[i + j][0])
-  #Se imprime Fx que es la tabla de las diferencias divididas
-  print(" x\t|\ty\t|\tfi[1]\t|\tfi[2]\t|\tfi[3]\t|\tfi[4]")
-  for fila in Fx:
-        print('\t'.join(f'{datos:.6f}' for datos in fila))
-  #Resultado numerico de la interpolacion
-  Pn = Fx[0][1]
-  producto = 1
-  for elem in range(2, grado_pol+ 2):
-    producto *= (punto - Fx[elem-2][0])
-    Pn+= Fx[0][elem] * producto
-  print(f"El resultado de interpolar el punto {p_interpolar} bajo un polinomio de grado {grado} es {Pn:.6f}")
+  return datos
 
 
-while True:
-  print("Integrantes del equipo:")
-  print(" - Moctezuma Isidro Michelle")
-  print(" - Villeda Lopez Saul")
-  print(" * * * Programa 2. Interpolación polinomial * * * \n")
-  ## Leer datos de la tabla
-  while True:
-    registros = int(input("Ingrese el número de puntos de la tabla: "))
-    if registros <= 0:
-      print("Error. Ingrese valor mayor que cero.\n")
-    elif registros == 1:
-      print("Error. Ingrese valor mayor que uno para poder realizar el método.\n")
+# Metodo progresivo
+def metodo_progresivo(tabla, x):
+  n = len(tabla) - 1
+  Pn = tabla[0][2]
+  fac = 1
+  
+  s = (x - tabla[0][1]) / (tabla[1][1] - tabla[0][1])
+
+  s_prod = 1
+  for i in range(n):
+    s_prod *= (s - i)
+    fac *= (i + 1)
+    Pn += (tabla[0][i + 3] * s_prod) / fac
+
+  return Pn
+
+
+# Metodo regresivo
+def metodo_regresivo(tabla, x):
+  n = len(tabla) - 1
+  Pn = tabla[-1][2]
+  fac = 1
+  
+  s = (x - tabla[-1][1]) / (tabla[1][1] - tabla[0][1])
+
+  s_prod = 1
+  for i in range(n):
+    s_prod *= (s + i)
+    fac *= (i + 1)
+    Pn += (tabla[n - 1 - i][i + 3] * s_prod) / fac
+
+  return Pn
+
+
+# Funcion del método de Diferencias de Newton
+def metodo_newton(datos, punto, grado):
+  n = len(datos) - 1
+
+  Fx = copy.deepcopy(datos)
+
+  # Comienza el método de diferencias divididas
+  for diferencia in range(1, n + 1):
+    for i in range(n + 1 - diferencia):
+        Fx[i].append(Fx[i + 1][-1] - Fx[i][-1])
+
+  # Imprime la tabla de diferencias
+  encabezado = ["i", "x_i", "f(x_i)", "Δ f(x_i)"]
+  for i in range(2, n + 1):
+    encabezado.append(f"Δ^{i} f(x_i)")
+
+  print("[bold]TABLA DE DIFERENCIAS[/bold]")
+  print(tabulate(Fx, headers=encabezado, tablefmt="grid"))
+
+  # Resultado numerico de la interpolacion
+  # Encuentra el índice del punto más cercano para determinar si usar progresivo o regresivo
+  intervalo = 0
+  for i in range(n):
+    if punto >= Fx[i][1]:
+      intervalo = i
     else:
       break
-  tabla = obtener_datos(registros)
-  print("\nLa tabla ingresada es la siguiente:")
-  imprime_tabla(tabla)
-  opcion = (input("\n¿Los datos son correctos? (S/N): "))
-  while opcion.lower() == 'n':
-    fila = int(input("\nIngrese la fila del valor a corregir: "))
-    if fila <= 0 or fila > registros:
-      print("Error. Ingrese fila válida.")
-    else:
-      tabla[fila - 1][0] = float(input("Ingrese nuevo valor para x: "))
-      tabla[fila - 1][1] = float(input("Ingrese nuevo valor para y: "))
-      # Ordena datos de nuevo
-      tabla = sorted(tabla, key=lambda elemento: elemento[0])
-      print("\nLa tabla es:")
-      imprime_tabla(tabla)
-      opcion = (input("\n¿Los datos son correctos? (S/N): "))
+  
+  # Determinar qué método usar según el grado solicitado
+  max_grado_progresivo = n - intervalo
+  max_grado_regresivo = intervalo + 1
 
-  ## Leer datos para la interpolación
-  while True:
-    while True:
-      p_interpolar = float(input("\nIngrese el punto a interpolar: "))
-      if p_interpolar < tabla[0][0] or p_interpolar > tabla[registros - 1][0]:
-        print("Error. El valor ingresado NO está dentro del intervalo de la tabla.")
-      else:
-        break
-
-    while True:
-      grado = int(input("\nIngrese grado del polinomio: "))
-      if grado <= 0:
-        print("Error. Ingrese valor mayor que cero.")
-      elif grado > (registros - 1):
-        print("Error. Los puntos de la tabla no son suficientes para un polinomio de grado ", grado)
-      else:
-        break
-
-    print("El punto a interpolar es ", p_interpolar, " con un polinomio de grado ", grado)
-
-    #Función que llama al método
-    metodo_diferencias(tabla,p_interpolar,grado)
-
-    op=(input("\nQuieres interpolar otro valor con la misma tabla?(S/N)"))
-    if op.lower()=='n':
-      break
-
-  # Si dice que no
-  op_2 = int(input("Si desea cambiar la tabla, digite '1', si desea regresar al menú principal (terminar ejecición del programa), digite cualquier otro dígito: "))
-  if op_2 == 1:
-    print("\nNueva tabla\n")
+  if grado <= max_grado_progresivo:
+    print(f"Se usó el [bold]método progresivo[/bold] desde la fila {intervalo} hasta la fila {intervalo + grado}")
+    Fx = Fx[intervalo:intervalo+grado+1]
+    pn = metodo_progresivo(Fx, punto)
+    print(f"✅ El resultado de interpolar el punto {punto} bajo un polinomio de grado {grado} es {pn}")
+  elif grado <= max_grado_regresivo:
+    print(f"Se usó el [bold]método regresivo[/bold] desde la fila {intervalo - grado + 1} hasta la fila {intervalo + 1}")
+    Fx = Fx[intervalo - grado + 1:intervalo + 2]
+    pn = metodo_regresivo(Fx, punto)
+    print(f"✅ El resultado de interpolar el punto {punto} bajo un polinomio de grado {grado} es {pn}")
   else:
-    break
+    print("⚠️ [bold]No se puedo interpolar el punto dado con los datos ingresados, ya que el grado del polinomio es mayor al número de puntos disponibles en la tabla para la ubicación del punto[/bold] ⚠️")
+
+
+def menu_programa2():
+  while True:
+    limpiar_pantalla()
+    caja_titulo_2("INTERPOLACIÓN Y AJUSTE DE CURVAS")
+
+    ## 1. Leer la tabla de valores
+    # 1.1 Solicitar número de puntos en la tabla
+    while True:
+        registros = int(input("⮞ Ingrese el número de puntos de la tabla: "))
+        if registros <= 1:
+          print("Error. Ingrese valor mayor que uno para poder realizar el método.\n")
+        else:
+          break
+      
+    # 1.2 Leer los puntos (xi,yi)
+    # 1.4 Verifique que los datos sean equidistantes y que estén ordenados, sino ordenarlos. (No se implementó pero se forzo)
+    tabla = obtener_datos(registros)
+
+    # 1.3 Preguntar ¿Son correctos los datos? En caso de NO solicitar la fila del valor a corregir, en caso de SI, continuar
+    print("\nLa [bold]tabla ingresada[/bold] es la siguiente:")
+    print(tabulate(tabla, headers=["i", "x_i", "f(x_i)"], tablefmt="grid"))
+
+    opcion = input("\n⮞ ¿Los datos son correctos? (S/N): ")
+    while opcion.strip().lower() == "n":
+        fila = int(input(f"\n⮞ Ingrese la fila del valor a corregir (en [0, {registros})): "))
+        if fila < 0 or fila >= registros:
+          print("Error. Ingrese fila válida.")
+        else:
+          tabla[fila][2] = float(input(f"⮞ Ingrese el nuevo valor para f(x_{fila}): "))
+          print("\nLa [bold]tabla corregida[/bold] es:")
+          print(tabulate(tabla, headers=["i", "x_i", "f(x_i)"], tablefmt="grid"))
+          opcion = (input("\n⮞ ¿Los datos son correctos? (S/N): "))
+
+
+    # 2. Leer datos para la interpolación
+    while True:
+      # 2.1 Solicitar punto a interpolar. Verifique que el punto esté dentro del intervalo de la tabla, [x_0,x_n]
+      while True:
+        p_interpolar = float(input("\n⮞ Ingrese el punto a interpolar: "))
+        if p_interpolar < tabla[0][1] or p_interpolar > tabla[registros - 1][1]:
+            print("Error. El valor ingresado NO está dentro del intervalo de la tabla.")
+        else:
+            break
+        
+      # 2.2 Leer grado del polinomio. Comprobar que los puntos de la tabla son suficientes para el grado del polinomio solicitado.
+      while True:
+        grado = int(input("\n⮞ Ingrese grado del polinomio: "))
+        if grado <= 0:
+            print("Error. Ingrese valor mayor que cero.")
+        elif grado > (registros - 1):
+            print("Error. Los puntos de la tabla no son suficientes para un polinomio de grado ", grado)
+        else:
+            break
+
+      limpiar_pantalla()
+      caja_titulo_2("INTERPOLACIÓN Y AJUSTE DE CURVAS")
+      print("[bold]DATOS FINALES INGRESADOS[/bold]")
+      print("1. TABLA DE VALORES")
+      print(tabulate(tabla, headers=["i", "x_i", "f(x_i)"], tablefmt="grid"))
+      print(f"2. PUNTO A INTERPOLAR: {p_interpolar}")
+      print(f"3. GRADO DEL POLINOMIO: {grado}")
+
+
+      # 3. Presentar tabla de diferencias y el resultado.
+      print()
+      metodo_newton(tabla, p_interpolar, grado)
+
+
+      # 4. Preguntar: ¿Desea interpolar otro punto con la misma tabla? 
+      op = input("\n⮞ ¿Desea interpolar otro punto con la misma tabla (S/N)? ")
+      # 4.1 En caso de SI regresar a (2)
+      if op.strip().lower() == "n":
+        break
+    
+    # 4.2 En caso de NO, preguntar ¿Desea cambiar la tabla [Regresar a (1) lectura de datos] o regresar al menú principal (termina la ejecución del módulo de interpolación)?
+
+    # Si dice que no
+    op_2 = int(input("Si desea cambiar la tabla, digite '1', si desea regresar al menú principal (terminar ejecición del programa), digite cualquier otro dígito: "))
+    if op_2 != 1:
+        break
