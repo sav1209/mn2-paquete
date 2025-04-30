@@ -1,6 +1,7 @@
 import platform
 from tabulate import tabulate
 import os
+from rich import print
 
 def limpiar_pantalla():
     """
@@ -21,3 +22,9 @@ def caja_titulo_1(texto):
 
 def caja_titulo_2(texto):
     print(tabulate([[texto]], tablefmt="heavy_grid"))
+
+def caja_titulo_3(texto):
+    print(tabulate([[texto]], tablefmt="rounded_grid"))
+
+def caja_titulo_4(texto):
+    print(tabulate([[texto]], tablefmt="pretty"))
