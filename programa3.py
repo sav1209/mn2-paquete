@@ -7,14 +7,17 @@ import numpy as np
 import csv
 from pathlib import Path
 
+DECIMALES = 8
 SPLINE_HEADERS = ("i", "x_i", "f(x_i)", "h_i", "f_0^[1]", "S_i", "a_i", "b_i", "c_i", "d_i")
 
 def leer_csv():
     limpiar_pantalla()
     caja_titulo_4("CAPTURA DE PUNTOS POR ARCHIVO CSV")
 
-    print("\n[bold]Nota:[/bold] El CSV debe tener 2 columnas de la forma (x_i, f(x_i)) sin encabezados.")
-    print("Ejemplo:")
+    print("[bold]Notas:[/bold]") 
+    print("◆ El CSV debe tener 2 columnas de la forma (x_i, f(x_i)) sin encabezados.")
+    print("◆ Se agrego 'prueba.csv' como ejemplo en la carpeta del programa.")
+    print("\n[bold]Ejemplo:[/bold]")
     print("0.95, -1.1\n1.73, 0.27\n2.23, -0.29\n2.77, 0.56\n2.99, 1.0")
 
     while True:
@@ -167,10 +170,10 @@ def splines_graficas(df, decimals=10):
     # Configuración final de la gráfica e impresión con todo lo cargado
     x0, xn = df['x_i'].iloc[0], df['x_i'].iloc[-1]
     ax.set(
-        xlim=(np.floor(x0) - 1, np.ceil(xn) + 1),
-        xticks=np.arange(np.floor(x0) - 1, np.ceil(xn) + 1, 1),
-        ylim=(np.floor(df['f(x_i)'].min()) - 1, np.ceil(df['f(x_i)'].max()) + 1),
-        yticks=np.arange(np.floor(df['f(x_i)'].min()) - 1, np.ceil(df['f(x_i)'].max()) + 1, 1),
+        xlim=(np.floor(x0 - 1), np.ceil(xn + 1)),
+        xticks=np.arange(np.floor(x0 - 1), np.ceil(xn + 1), 1),
+        ylim=(np.floor(df['f(x_i)'].min() - 1), np.ceil(df['f(x_i)'].max() + 1)),
+        yticks=np.arange(np.floor(df['f(x_i)'].min() - 1), np.ceil(df['f(x_i)'].max() + 1), 1),
         xlabel='x',
         ylabel='f(x)',
     )
@@ -251,16 +254,17 @@ def menu_programa3():
 
         limpiar_pantalla()
         caja_titulo_3("RESULTADOS")
+        print(f"[bold]OBSERVACIÓN:[/bold] Todos los valores siguientes fueron redondeados a {DECIMALES} decimales para una mejor visualización.\n")
+
         # Imprime la tabla de con los valores obtenidos después de realizar los cálculos
-        print()
+        tabla_imp = tabla.round(DECIMALES)
+        tabla_imp = tabla_imp.fillna('')
         caja_titulo_4("TABLA DE SPLINE CÚBICO")
-        print("[bold]OBSERVACIÓN:[/bold] En caso de no visualizar la tabla completa, ajuste el tamaño de la ventana de su terminal o de la fuente.")
-        print(tabulate(tabla.fillna(''), headers=SPLINE_HEADERS, tablefmt="fancy_grid"))
+        print("[bold]OBSERVACIÓN:[/bold] En caso de no visualizar la tabla completa, ajuste el tamaño de la ventana de su terminal o de la fuente y vuelva a intentar.")
+        print(tabulate(tabla_imp, headers=SPLINE_HEADERS, tablefmt="fancy_grid"))
 
         # Imprime los splines (usando 4 decimales) y genera la gráfica
         print()
         caja_titulo_4("POLINOMIOS")
-        print("[bold]OBSERVACIONES:[/bold]")
-        print("• Los polinomios fueron impresos en este formato para que puedan ser copiados y pegados fácilmente a GeoGebra y se grafiquen en el intevalo correcto.")
-        print("• Los coeficientes a_i, b_i, c_i y d_i fueron redondeados a 6 decimales para facilitar la lectura.\n")
-        splines_graficas(tabla, decimals=6)
+        print("[bold]OBSERVACIÓN:[/bold] Los polinomios fueron impresos en este formato para que puedan ser copiados y pegados fácilmente a GeoGebra y se grafiquen en el intevalo correcto.")
+        splines_graficas(tabla, decimals=DECIMALES)
