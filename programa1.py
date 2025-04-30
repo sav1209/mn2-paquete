@@ -1,6 +1,7 @@
 import numpy as np
 from tabulate import tabulate
 from utils import *
+from rich import print
 
 
 # Algunas utilidades básicas
