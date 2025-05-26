@@ -1,6 +1,7 @@
 from programa1 import menu_programa1
 from programa2 import menu_programa2
 from programa3 import menu_programa3
+from programa4 import menu_programa4
 from utils import *
 import textwrap
 from rich import print
@@ -44,7 +45,8 @@ if __name__ == "__main__":
         print("1. Solucion de sistemas de ecuaciones no lineales (Broyden)")
         print("2. Interpolación y ajuste de curvas")
         print("3. Aproximación polinomial")
-        print("4. Salir")
+        print("4. Integración numérica")
+        print("5. Salir")
         opcion = int(input("Seleccione una opcion: "))
         
         if opcion == 1:
@@ -54,6 +56,8 @@ if __name__ == "__main__":
         elif opcion == 3:
             menu_programa3()
         elif opcion == 4:
+            menu_programa4()
+        elif opcion == 5:
             print("🫶 Adios, vuelva pronto 🫰")
             break
         else:
