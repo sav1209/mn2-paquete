@@ -17,6 +17,7 @@ funciones = [{
 
 def metodo_romberg(f, a, b, decimals):
     epsilon = 10**(-decimals)
+
     xi = [a, b]
     h = b - a
     estimaciones_trapecio = [h/2 * (f(a) + f(b))]
@@ -53,10 +54,12 @@ def metodo_romberg(f, a, b, decimals):
             break;
         j += 1
 
+    print()
     caja_titulo_3("RESULTADOS")
     caja_titulo_4("Tabla de extrapolación de Romberg")
     print("[bold]OBSERVACIÓN:[/bold] En caso de no visualizar la tabla completa, ajuste el tamaño de su terminal o de la fuente y vuelva a intentar.")
-    print(tabulate(tabla_romberg, headers=encabezado, tablefmt="grid", floatfmt=f".{decimals+2}f"))
+    print("[bold]OBSERVACIÓN:[/bold] Se utilizo la regla recursiva del trapecio y por eso no se solicito un número inicial de subintervalos.")
+    print(tabulate(tabla_romberg, headers=encabezado, tablefmt="fancy_grid", floatfmt=f".{decimals+2}f"))
 
     return tabla_romberg[-1][-1]
 
@@ -77,7 +80,7 @@ def menu_programa4():
         if opcion == i:
             break
         if opcion < 1 or opcion > i:
-            print("Opcion INVALIDA, seleccione otra opcion.")
+            input("Opcion INVALIDA, presione enter y vuelva a intentar.")
             continue
 
         print("\u27A5 Ingrese el intervalo de integración [x0, xn]:")
@@ -87,7 +90,7 @@ def menu_programa4():
         while True:
             digitos_precision = int(input("\u27A5 Ingrese el número de digitos de precisión (entre 1 y 10): "))
             if digitos_precision < 1 or digitos_precision > 10:
-                print("ERROR. Ingrese un número válido de digitos.")
+                print("\tERROR. Ingrese un número válido de digitos.")
             else:
                 break
         
