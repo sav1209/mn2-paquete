@@ -9,8 +9,8 @@ def obtener_datos(registros):
   datos = []
 
   while True:
-    x0 = float(input("⮞ Ingrese el valor de x_0: "))
-    xn = float(input("⮞ Ingrese el valor de x_n: "))
+    x0 = float(input("⮞ Ingrese el valor de x_0: ").strip())
+    xn = float(input("⮞ Ingrese el valor de x_n: ").strip())
     if xn <= x0:
       print("Error. El valor de x_n debe ser mayor que x_0.\n")
     else:
@@ -22,7 +22,7 @@ def obtener_datos(registros):
   xi = x0
   print("⮞ Ingrese los valores de f(x_i) para cada x_i")
   for i in range(registros):
-    f_xi = float(input(f"  👉 x_{i} = {xi}, f(x_{i}) = "))
+    f_xi = float(input(f"  👉 x_{i} = {xi}, f(x_{i}) = ").strip())
     datos.append([i, xi, f_xi])
     # Si la siguiente iteración es la última toma el valor de x_n para evitar error de redondeo
     if i == registros - 2:
@@ -121,7 +121,7 @@ def menu_programa2():
     ## 1. Leer la tabla de valores
     # 1.1 Solicitar número de puntos en la tabla
     while True:
-        registros = int(input("⮞ Ingrese el número de puntos de la tabla: "))
+        registros = int(input("⮞ Ingrese el número de puntos de la tabla: ").strip())
         if registros <= 1:
           print("Error. Ingrese valor mayor que uno para poder realizar el método.\n")
         else:
@@ -137,11 +137,11 @@ def menu_programa2():
 
     opcion = input("\n⮞ ¿Los datos son correctos? (S/N): ")
     while opcion.strip().lower() == "n":
-        fila = int(input(f"\n⮞ Ingrese la fila del valor a corregir (en [0, {registros})): "))
+        fila = int(input(f"\n⮞ Ingrese la fila del valor a corregir (en [0, {registros})): ").strip())
         if fila < 0 or fila >= registros:
           print("Error. Ingrese fila válida.")
         else:
-          tabla[fila][2] = float(input(f"⮞ Ingrese el nuevo valor para f(x_{fila}): "))
+          tabla[fila][2] = float(input(f"⮞ Ingrese el nuevo valor para f(x_{fila}): ").strip())
           print("\nLa [bold]tabla corregida[/bold] es:")
           print(tabulate(tabla, headers=["i", "x_i", "f(x_i)"], tablefmt="grid"))
           opcion = (input("\n⮞ ¿Los datos son correctos? (S/N): "))
@@ -151,7 +151,7 @@ def menu_programa2():
     while True:
       # 2.1 Solicitar punto a interpolar. Verifique que el punto esté dentro del intervalo de la tabla, [x_0,x_n]
       while True:
-        p_interpolar = float(input("\n⮞ Ingrese el punto a interpolar: "))
+        p_interpolar = float(input("\n⮞ Ingrese el punto a interpolar: ").strip())
         if p_interpolar < tabla[0][1] or p_interpolar > tabla[registros - 1][1]:
             print("Error. El valor ingresado NO está dentro del intervalo de la tabla.")
         else:
@@ -159,7 +159,7 @@ def menu_programa2():
         
       # 2.2 Leer grado del polinomio. Comprobar que los puntos de la tabla son suficientes para el grado del polinomio solicitado.
       while True:
-        grado = int(input("\n⮞ Ingrese grado del polinomio: "))
+        grado = int(input("\n⮞ Ingrese grado del polinomio: ").strip())
         if grado <= 0:
             print("Error. Ingrese valor mayor que cero.")
         elif grado > (registros - 1):
@@ -186,10 +186,9 @@ def menu_programa2():
       # 4.1 En caso de SI regresar a (2)
       if op.strip().lower() == "n":
         break
-    
-    # 4.2 En caso de NO, preguntar ¿Desea cambiar la tabla [Regresar a (1) lectura de datos] o regresar al menú principal (termina la ejecución del módulo de interpolación)?
+
 
     # Si dice que no
-    op_2 = int(input("Si desea cambiar la tabla, digite '1', si desea regresar al menú principal (terminar ejecición del programa), digite cualquier otro dígito: "))
-    if op_2 != 1:
+    op_2 = input("Si desea cambiar la tabla, digite '1', y si desea regresar al menú principal del paquete, digite cualquier otro dígito: ").strip()
+    if op_2 != "1":
         break

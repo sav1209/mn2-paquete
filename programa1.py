@@ -12,22 +12,22 @@ def norm_esp(vec):
 
 # Función para leer una toleracia valida
 def leer_tolerancia():
-    tol = float(input("\u27A5 Ingrese la tolerancia: "))
+    tol = float(input("\u27A5 Ingrese la tolerancia: ").strip())
 
     while tol <= 0:
         print("La tolerancia debe ser mayor que cero.")
-        tol = float(input("\u27A5 Ingrese la tolerancia: "))
+        tol = float(input("\u27A5 Ingrese la tolerancia: ").strip())
 
     return tol
 
 
 # Función para leer un numero máximo de iteraciones valido
 def leer_max_iteraciones():
-    max_iter = int(input("\u27A5 Ingrese el numero maximo de iteraciones: "))
+    max_iter = int(input("\u27A5 Ingrese el numero maximo de iteraciones: ").strip())
 
     while max_iter <= 0:
         print("El numero de iteraciones debe ser mayor que cero.")
-        max_iter = int(input("\u27A5 Ingrese el numero maximo de iteraciones: "))
+        max_iter = int(input("\u27A5 Ingrese el numero maximo de iteraciones: ").strip())
 
     return max_iter
 
@@ -122,7 +122,7 @@ def lectura_vector_inicial(vars):
     x0 = []
     print("Ingrese las componentes del vector inicial:")
     for var in vars:
-        component = float(input(f"{var}^(0) = "))
+        component = float(input(f"  ◆ {var}^(0) = ").strip())
         x0.append([component])
 
     return np.array(x0)
@@ -171,6 +171,8 @@ def metodo_broyden(sistema, x0, tol, max_iter):
 
         k += 1
 
+    print()
+    print("[bold]OBSERVACIÓN:[/bold] En caso de no visualizar la tabla correctamente, ajuste el tamaño de su terminal o de la fuente y vuelva a intentar.")
     print(tabulate(table, headers, tablefmt="fancy_grid"))
     print()
     if tol_alcanzada:
@@ -183,11 +185,12 @@ def metodo_broyden(sistema, x0, tol, max_iter):
 
 def menu_otro_calculo():
     while True:
+        print("¿Qué desea realizar a continuación?")
         print("1. Probar otros datos iniciales")
         print("2. Elegir otro sistema")
         print("3. Regresar al menú principal")
         
-        opcion = int(input("\u27A5 Ingrese una opcion: "))
+        opcion = int(input("\u27A5 Ingrese una opcion: ").strip())
         if 1 <= opcion <= 3:
             return opcion
 
@@ -207,7 +210,7 @@ def menu_programa1():
             i += 1
         print(f"{i}. Regresar al menu principal")
 
-        opcion = int(input("\n\u27A5 Seleccione una opción: "))
+        opcion = int(input("\n\u27A5 Seleccione una opción: ").strip())
         if opcion == 5:
             break
         if opcion < 1 or opcion > 5:

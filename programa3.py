@@ -260,7 +260,7 @@ def menu_programa3():
         tabla_imp = tabla.round(DECIMALES)
         tabla_imp = tabla_imp.fillna('')
         caja_titulo_4("TABLA DE SPLINE CÚBICO")
-        print("[bold]OBSERVACIÓN:[/bold] En caso de no visualizar la tabla completa, ajuste el tamaño de la ventana de su terminal o de la fuente y vuelva a intentar.")
+        print("[bold]OBSERVACIÓN:[/bold] En caso de no visualizar la tabla correctamente, ajuste el tamaño de su terminal o de la fuente y vuelva a intentar.")
         print(tabulate(tabla_imp, headers=SPLINE_HEADERS, tablefmt="fancy_grid"))
 
         # Imprime los splines (usando 4 decimales) y genera la gráfica

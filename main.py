@@ -11,13 +11,13 @@ from rich import box
 
 
 def crear_pantalla_bienvenida():
-    titulo = "PAQUETE DE PROGRAMAS (PARTE 2)"
+    titulo = "PAQUETE DE PROGRAMAS"
     mensaje = [
         "Asignatura: Método numéricos II",
         "Profesora: Teresa Carrillo Ramirez",
         "Integrantes: ",
-        "\u29BF Moctezuma Isidro Michelle",
-        "\u29BF Villeda Lopez Saul"
+        "▷ Moctezuma Isidro Michelle",
+        "▷ Villeda Lopez Saul"
     ]
 
     caja = Table(box=box.DOUBLE, expand=True)
@@ -29,8 +29,7 @@ def crear_pantalla_bienvenida():
     caja.add_row("\n" + "\n".join(mensaje + [pie]))
 
     Console().print(caja)
-    
-    # Esperar entrada del usuario
+
     input()
 
 # Ejecutar la aplicación
@@ -47,7 +46,7 @@ if __name__ == "__main__":
         print("3. Aproximación polinomial")
         print("4. Integración numérica")
         print("5. Salir")
-        opcion = int(input("Seleccione una opcion: "))
+        opcion = int(input("Seleccione una opcion: ").strip())
         
         if opcion == 1:
             menu_programa1()

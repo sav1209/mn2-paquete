@@ -57,7 +57,7 @@ def metodo_romberg(f, a, b, decimals):
     print()
     caja_titulo_3("RESULTADOS")
     caja_titulo_4("Tabla de extrapolación de Romberg")
-    print("[bold]OBSERVACIÓN:[/bold] En caso de no visualizar la tabla completa, ajuste el tamaño de su terminal o de la fuente y vuelva a intentar.")
+    print("[bold]OBSERVACIÓN:[/bold] En caso de no visualizar la tabla correctamente, ajuste el tamaño de su terminal o de la fuente y vuelva a intentar.")
     print("[bold]OBSERVACIÓN:[/bold] Se utilizo la regla recursiva del trapecio y por eso no se solicito un número inicial de subintervalos.")
     print(tabulate(tabla_romberg, headers=encabezado, tablefmt="fancy_grid", floatfmt=f".{decimals+2}f"))
 
